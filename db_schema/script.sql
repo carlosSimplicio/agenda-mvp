@@ -78,7 +78,14 @@ create table ServiceRecord (
     Id integer primary key
     CustomerId integer references Customer (Id)
     EmployeeId integer references Employee (Id)
-    Day datetime not null
+    CreatedAt datetime default current_timestamp
+    UpdatedAt datetime default current_timestamp on update current_timestamp
+    StatusId integer references ServiceRecordStatus (Id)
+)
+
+create table ServiceRecordStatus (
+    Id integer primary key
+    Name varchar(255) not null
 )
 
 create table ServiceRecordServiceList (
