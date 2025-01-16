@@ -41,9 +41,12 @@ create table AccessRole (
     Name varchar(255) not null
 )
 
-create table EmployeeRole (
+create table Employee (
     Id integer primary key
-    UserId integer primary key
+    Name varchar(255) not null
+    HasAccess boolean default false
+    UserId integer references User (Id)
+    CompanyId integer references Company (Id)
 )
 
 create table UserAccessRole (
@@ -58,6 +61,8 @@ create table Service (
     Price integer not null
     CompanyId integer references Company (Id)
     Duration integer not null
+    CategoryId integer references ServiceCategory (Id)
+    ComissionTypeId integer references ComissionType (Id)
 )
 
 create table ServiceEmployeeRole (
@@ -65,6 +70,13 @@ create table ServiceEmployeeRole (
     EmployeeRoleId integer references EmployeeRole (Id)
     ServiceId integer references Service (Id)
 )
+
+create table EmployeeService (
+    Id integer primary key
+    EmployeeId integer references Employee (Id)
+    ServiceId integer references Service (Id)
+)
+
 
 create table Schedule (
     Id integer primary key
@@ -105,4 +117,90 @@ create table ServiceRecordComments (
     ServiceRecordId integer references ServiceRecord (Id)
     EmployeeComment text
 )
+
+create table ServiceCategory (
+    Id integer primary key
+    Name varchar(255) not null
+)
+
+create table ComissionType (
+    Id integer primary key
+    Name varchar(255) not null
+)
+
+create table ServiceComission (
+    Id integer primary key
+    Value integer not null
+)
+
+create table EmployeeServiceComission (
+    Id integer primary key
+    ServiceId integer references Service (Id)
+    EmployeeId integer references Employee (Id) 
+    Value integer not null
+)
+
+create table ServiceCombo (
+    Id integer primary key
+    Name varchar(255) not null
+    Active boolean
+)
+
+create table ServiceComboList (
+    Id integer primary key
+    ServiceId integer references Service (Id)
+)
+
+create table WeekDay (
+    Id integer primary key
+    Name varchar(255) not null
+)
+
+create table EmployeeSchedule (
+    Id integer primary key
+    EmployeeId integer references Employee (Id) 
+    WeekDayId integer references WeekDay (Id)
+    StartTime time not null
+    EndTime time not null
+    HasLunch boolean default false
+    LunchStartTime time
+    LunchEndTIme time
+)
+
+create table EmployeeDayOff (
+    Id integer primary key
+    EmployeeId integer references Employee (Id) 
+    StartDate date not null
+    EndDate date not null
+    StartTime time not null
+    EndTime time not null
+    CategoryId integer references DayOffCategory (Id)
+)
+
+create table DayOffCategory (
+    Id integer primary key
+    Name varchar(255) not null
+)
+
+create table Expenses (
+    Id integer primary key
+    Name varchar(255) not null
+    Value integer not null
+    ExpenseCategoryId integer references ExpenseCategory (Id)
+    StatusId integer references ExpenseStatus (Id)
+    PaymentTypeId integer references PaymentType (Id)
+)
+
+create table ExpenseCategory (
+    Id integer primary key
+    Name varchar(255) not null
+)
+
+create table ExpenseStatus (
+    Id integer primary key
+    Name varchar(255) not null
+)
+
+
+    
 
