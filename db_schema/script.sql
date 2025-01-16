@@ -23,13 +23,8 @@ create table Product (
     Id integer primary key
     Name varchar(255) not null
     Price integer not null
-);
-
-create table CompanyProduct (
-    Id integer primary key
     CompanyId integer references Company (Id)
-    ProductId integer references Product (Id)
-)
+);
 
 create table PaymentMethod (
     Id integer primary key
@@ -75,6 +70,7 @@ create table EmployeeService (
     Id integer primary key
     EmployeeId integer references Employee (Id)
     ServiceId integer references Service (Id)
+    CompanyId integer references Company (Id)
 )
 
 
@@ -84,6 +80,7 @@ create table Schedule (
     CustomerId integer references Customer (Id)
     EmployeeId integer references Employee (Id)
     Day datetime not null -- should probably be indexed
+    CompanyId integer references Company (Id)
 )
 
 create table ServiceRecord (
@@ -93,6 +90,7 @@ create table ServiceRecord (
     CreatedAt datetime default current_timestamp
     UpdatedAt datetime default current_timestamp on update current_timestamp
     StatusId integer references ServiceRecordStatus (Id)
+    CompanyId integer references Company (Id)
 )
 
 create table ServiceRecordStatus (
@@ -144,11 +142,13 @@ create table ServiceCombo (
     Id integer primary key
     Name varchar(255) not null
     Active boolean
+    CompanyId integer references Company (Id)
 )
 
 create table ServiceComboList (
     Id integer primary key
     ServiceId integer references Service (Id)
+    ServiceComboId integer references ServiceCombo (Id)
 )
 
 create table WeekDay (
@@ -189,6 +189,7 @@ create table Expenses (
     ExpenseCategoryId integer references ExpenseCategory (Id)
     StatusId integer references ExpenseStatus (Id)
     PaymentTypeId integer references PaymentType (Id)
+    CompanyId integer references Company (Id)
 )
 
 create table ExpenseCategory (
@@ -200,8 +201,6 @@ create table ExpenseStatus (
     Id integer primary key
     Name varchar(255) not null
 )
-
---mod
 
 
     
