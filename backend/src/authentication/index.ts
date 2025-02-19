@@ -70,7 +70,8 @@ export class AuthenticationService {
 			throw new Error("Incorrect password")
 		}
 
-		const token = await this.generateToken({ user })
+		const { id, companyId } = user
+		const token = await this.generateToken({ id, companyId })
 
 		return token
 
@@ -79,7 +80,7 @@ export class AuthenticationService {
 	private async generateToken(data: any) {
 		let token = ""
 		await new Promise((resolve, reject) => {
-			jwt.sign({ data }, config.authorizationCookie.jwtSecret,
+			jwt.sign({ data }, config.authenticationCookie.jwtSecret,
 				(err: Error | null, generated_token: string | undefined) => {
 					if (err) reject(err)
 

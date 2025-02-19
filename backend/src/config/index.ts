@@ -1,5 +1,5 @@
 export default {
-	authorizationCookie: {
+	authenticationCookie: {
 		jwtSecret: "my-secret",
 		ttl: 1000000
 	}

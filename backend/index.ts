@@ -21,7 +21,7 @@ app.post("/register", async (req, res) => {
 	console.log(data)
 	const token = await authService.register(data)
 	console.log('generated-token: ', token)
-	res.cookie('amv-security-token', token, { maxAge: config.authorizationCookie.ttl, httpOnly: true })
+	res.cookie('amv-security-token', token, { maxAge: config.authenticationCookie.ttl, httpOnly: true })
 	res.end()
 })
 
@@ -29,7 +29,7 @@ app.post("/signin", async (req, res) => {
 	const data = SignInDataModel.parse(req.body)
 	console.log(data)
 	const token = await authService.signIn(data)
-	res.cookie('amv-security-token', token, { maxAge: config.authorizationCookie.ttl, httpOnly: true })
+	res.cookie('amv-security-token', token, { maxAge: config.authenticationCookie.ttl, httpOnly: true })
 	res.end()
 })
 
