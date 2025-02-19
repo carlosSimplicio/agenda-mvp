@@ -8,9 +8,11 @@ export class UserRepository extends BaseRepository {
 	}
 
 	async createUser(transaction: Transaction, userData: CreateUserData) {
-		const query = "insert into users (name, password, email, phonenumber, companyid) values($1, $2, $3, $4, $5)"
+		const query = "insert into users (name, password, email, phonenumber, companyid) values($1, $2, $3, $4, $5) returning id"
 		const values = [userData.name, userData.password, userData.email, userData.phone, userData.companyId]
-		return transaction.execute(query, values)
+		const result = await transaction.execute(query, values)
+
+		return result[0].id as number
 	}
 
 	async getUser(userData: SignInData) {

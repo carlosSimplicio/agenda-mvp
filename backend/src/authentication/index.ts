@@ -1,7 +1,9 @@
+import config from "../config";
 import { CreateUserData, RegisterData, SignInData } from "../models";
 import { CompanyRepository } from "../repositories/company";
 import { UserRepository } from "../repositories/user";
 import bcrypt from "bcrypt"
+import jwt from 'jsonwebtoken'
 
 const SALT_ROUNDS = 10
 
@@ -28,15 +30,18 @@ export class AuthenticationService {
 
 		const transaction = await this.companyRepository.getTransaction()
 		await transaction.start()
+		let companyId: number
+		let userId: number
 		try {
 
-			const companyId = await this.companyRepository.createCompany(transaction, registerData.companyName)
-			console.log(companyId)
+			companyId = await this.companyRepository.createCompany(transaction, registerData.companyName)
+			console.log("Company created: ", companyId)
 			const createUserData: CreateUserData = {
 				...registerData, companyId
 			}
 
-			await this.userRepository.createUser(transaction, createUserData)
+			userId = await this.userRepository.createUser(transaction, createUserData)
+			console.log("User created: ", userId)
 
 			await transaction.commit()
 		} catch (err) {
@@ -45,6 +50,9 @@ export class AuthenticationService {
 		} finally {
 			await transaction.release()
 		}
+
+		const token = await this.generateToken({ userId, companyId })
+		return token
 
 	}
 
@@ -62,6 +70,28 @@ export class AuthenticationService {
 			throw new Error("Incorrect password")
 		}
 
+		const token = await this.generateToken({ user })
+
+		return token
+
+	}
+
+	private async generateToken(data: any) {
+		let token = ""
+		await new Promise((resolve, reject) => {
+			jwt.sign({ data }, config.authorizationCookie.jwtSecret,
+				(err: Error | null, generated_token: string | undefined) => {
+					if (err) reject(err)
+
+					if (!generated_token) reject(new Error("Failed to generate token"))
+
+					token = generated_token ?? ""
+					resolve(null)
+
+				})
+		})
+
+		return token
 	}
 
 
